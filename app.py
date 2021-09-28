@@ -23,8 +23,8 @@ def get_desert():
 @app.route("/orders/<order_id>")
 def get_order(order_id: int):
     order = get_table.find_single_order(order_id)
-    print(order)
-    print(len(order))
+    # print(order)
+    # print(len(order))
 
     if (len(order) == 2):
         return make_response("order id does not exist!")
