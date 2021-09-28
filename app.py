@@ -37,8 +37,11 @@ def create_order():
     customer_id = request.json["customer_id"]
     menu_items = request.json["menu_items"]
     quantity = request.json["quantity"]
-    post_order.create_order(customer_id=customer_id, menu_items= menu_items , quantity=quantity)
-    return jsonify(request.json)
+    if chek_order(menu_items):
+        post_order.create_order(customer_id=customer_id, menu_items= menu_items , quantity=quantity)
+        return jsonify(request.json)
+    else:
+        return make_response({"error": f"you need to order atleast one pizza"})
 
 
 @app.route("/customer", methods=["POST"])
@@ -48,11 +51,26 @@ def create_customer():
     postcode = request.json["postcode"]
     phone_number = request.json["phone_number"]
     name = request.json["name"]
-    number_of_pizzas = request.json["number_of_pizzas"]
+    number_of_pizzas = 0
     adress_id = post_order.create_adress(street,houseNumber, postcode)
     post_order.create_customer(phone_number,name,number_of_pizzas,adress_id)
     return jsonify(request.json)
 
 
+@app.route("/pizza/<pizza_id>", methods=["GET"])
+def get_pizza_info(pizza_id: int):
+
+    related_topping = get_table.find_pizza_info(pizza_id)
+
+    if len(related_topping) == 2:
+        return make_response("pizza dose not exist!")
+    else:
+        return related_topping
 
 
+def chek_order(menuItems):
+    menuItems.sort()
+    if menuItems[0] > 10:
+        return False
+    else:
+        return True

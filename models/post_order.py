@@ -8,6 +8,8 @@ mycursor = mydb.cursor()
 def create_order(customer_id, menu_items, quantity):
     mycursor.execute(f"insert into orders(customer_id) values ({customer_id}) ")
     mydb.commit()
+    mycursor.execute(f"update customer set numberOfPizzas = numberOfPizzas +1 where customer_id = {customer_id}")
+    mydb.commit()
     mycursor.execute("select order_id from orders order by order_id desc limit 1;")
     order_id = mycursor.fetchone()[0]
     for i in range(len(menu_items)):
