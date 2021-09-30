@@ -1,6 +1,7 @@
 import string
 import random
 
+
 def chek_order(menuItems):
     menuItems.sort()
     if menuItems[0] > 10:
@@ -10,7 +11,7 @@ def chek_order(menuItems):
 
 
 discount_code_in_use=None
-def discount_generator(size=6, chars=string.ascii_uppercase + string.digits, ):
+def discount_generator(size=6, chars=string.ascii_uppercase + string.digits):
     code =  ''.join(random.choice(chars) for _ in range(size))
     if(code in discount_code_in_use):
         code = discount_generator

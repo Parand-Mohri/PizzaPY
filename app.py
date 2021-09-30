@@ -44,11 +44,11 @@ def get_pizza_info(pizza_id: int):
 
 
 #Order & Customer
-@app.route("/orders/<order_id>")
+@app.route("/order/<order_id>", methods=["GET"])
 def get_order(order_id: int):
     order = get_table.find_single_order(order_id)
     print(order)
-    if (len(order )== 2):
+    if (len(order)== 2):
         return make_response("order id does not exist!")
     else:
         return make_response(order, 200)
