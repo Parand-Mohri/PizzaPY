@@ -4,7 +4,6 @@ from datetime import datetime
 mydb = mysql.connector.connect(host= "localhost", user="root", passwd="", database="pizza")
 
 mycursor = mydb.cursor()
-discount_code_in_use=None
 
 def create_order(customer_id, menu_items, quantity,discount_code):
     mycursor.execute(f"insert into orders(customer_id, date) values ({customer_id}, '{datetime.now()}') ")
