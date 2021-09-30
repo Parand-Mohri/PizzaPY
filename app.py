@@ -1,5 +1,7 @@
 import mysql.connector
 from flask import Flask, request, render_template, make_response, jsonify
+
+from controller.orderController import chek_order
 from models import get_table, post_order
 
 app = Flask(__name__)
@@ -37,8 +39,9 @@ def create_order():
     customer_id = request.json["customer_id"]
     menu_items = request.json["menu_items"]
     quantity = request.json["quantity"]
+    discount_code = request.json["discount_code"]
     if chek_order(menu_items):
-        post_order.create_order(customer_id=customer_id, menu_items= menu_items , quantity=quantity)
+        post_order.create_order(customer_id=customer_id, menu_items= menu_items , quantity=quantity, discount_code= discount_code)
         return jsonify(request.json)
     else:
         return make_response({"error": f"you need to order atleast one pizza"})
@@ -68,9 +71,3 @@ def get_pizza_info(pizza_id: int):
         return related_topping
 
 
-def chek_order(menuItems):
-    menuItems.sort()
-    if menuItems[0] > 10:
-        return False
-    else:
-        return True
