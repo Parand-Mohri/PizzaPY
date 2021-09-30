@@ -18,3 +18,4 @@ def discount_generator(size=6, chars=string.ascii_uppercase + string.digits, ):
         discount_code_in_use.append(code)
     return code
 
+# def check_customerId(customer_id):

@@ -3,12 +3,21 @@ from flask import Flask, request, render_template, make_response, jsonify
 
 from controller.orderController import chek_order
 from models import get_table, post_order
+from models.calculationPricePizza import calculate_price_pizza
 
 app = Flask(__name__)
 
 
+#Pizza & Menu
+@app.route("/menu", methods=["GET"])
+def get_menu():
+    return get_table.get_table("pizza") + get_table.get_table("drink") + get_table.get_table("desert")
+
+
 @app.route("/pizza", methods=["GET"])
 def get_pizza():
+    # for updating the proce for pizzas
+    # calculate_price_pizza()
     return get_table.get_table("pizza")
 
 
@@ -22,13 +31,24 @@ def get_desert():
     return get_table.get_table("desert")
 
 
+@app.route("/pizza/<pizza_id>", methods=["GET"])
+def get_pizza_info(pizza_id: int):
+
+    related_topping = get_table.find_pizza_info(pizza_id)
+
+    if len(related_topping) == 2:
+        return make_response("pizza dose not exist!")
+    else:
+        return related_topping
+
+
+
+#Order & Customer
 @app.route("/orders/<order_id>")
 def get_order(order_id: int):
     order = get_table.find_single_order(order_id)
-    # print(order)
-    # print(len(order))
-
-    if (len(order) == 2):
+    print(order)
+    if (len(order )== 2):
         return make_response("order id does not exist!")
     else:
         return make_response(order, 200)
@@ -60,14 +80,6 @@ def create_customer():
     return jsonify(request.json)
 
 
-@app.route("/pizza/<pizza_id>", methods=["GET"])
-def get_pizza_info(pizza_id: int):
 
-    related_topping = get_table.find_pizza_info(pizza_id)
-
-    if len(related_topping) == 2:
-        return make_response("pizza dose not exist!")
-    else:
-        return related_topping
 
 
