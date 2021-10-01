@@ -51,17 +51,6 @@ def get_desert():
                    status=200)
 
 
-# @app.route("/topping", methods=["GET"])
-# def get_pizza_info():
-#     pizza_id = request.json("pizza_id")
-#     related_topping = get_table.find_pizza_info(pizza_id)
-#
-#     if len(related_topping) == 2:
-#         return make_response("pizza dose not exist!")
-#     else:
-#         return related_topping
-
-
 # Order & Customer
 @app.route("/order/<order_id>", methods=["GET"])
 def get_order(order_id: int):

@@ -33,7 +33,6 @@ def create_order(order):
         mycursor.execute(
             f"insert into orderitem (order_id, menuitem_id, quantity) values({order.order_id},{menu_item}, {quantity})")
         mydb.commit()
-
     return order
 
 

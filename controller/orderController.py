@@ -1,15 +1,6 @@
 import string
 import random
 
-
-# def chek_order(menuItems):
-#     menuItems.sort()
-#     if menuItems[0] > 10:
-#         return False
-#     else:
-#         return True
-
-
 discount_code_in_use = None
 
 
