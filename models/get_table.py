@@ -56,4 +56,4 @@ def find_pizza_info(pizza_id):
 def get_topping(pizza):
     mycursor.execute(f"select topping.name from pizzatopping left join topping on pizzatopping.topping_id = topping.topping_id where pizza_id = {pizza.pizza_id}")
     for topping in mycursor:
-        pizza.toppings.append(topping)
+        pizza.toppings.append(topping[0])
