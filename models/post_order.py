@@ -17,6 +17,8 @@ def create_order(order):
         quantity = pizza['quantity']
         mycursor.execute(f"insert into orderitem (order_id, menuitem_id, quantity) values({order.order_id},{menu_item},{quantity})")
         mydb.commit()
+        mycursor.execute(f"select price from pizza where pizza_id = {pizza['pizza_id']}")
+        order.price = mycursor.fetchone()[0] * quantity
 
     for drink in order.drinks:
         mycursor.execute(f"select menuitem_id from menuItem where pizza_id = {drink['drink_id']}")
@@ -25,6 +27,8 @@ def create_order(order):
         mycursor.execute(
             f"insert into orderitem (order_id, menuitem_id, quantity) values({order.order_id},{menu_item}, {quantity})")
         mydb.commit()
+        mycursor.execute(f"select price from drink where drink_id = {drink['drink_id']}")
+        order.price = order.price + (mycursor.fetchone()[0] * quantity)
 
     for dessert in order.desserts:
         mycursor.execute(f"select menuitem_id from menuItem where pizza_id = {dessert['dessert_id']}")
@@ -33,6 +37,9 @@ def create_order(order):
         mycursor.execute(
             f"insert into orderitem (order_id, menuitem_id, quantity) values({order.order_id},{menu_item}, {quantity})")
         mydb.commit()
+        mycursor.execute(f"select price from desert where desert_id = {dessert['dessert_id']}")
+        order.price = order.price + (mycursor.fetchone()[0] * quantity)
+
     return order
 
 

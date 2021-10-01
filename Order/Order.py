@@ -9,8 +9,8 @@ class Order():
         # self.deliveryperson_id = None
         self.date = datetime.now()
         # self.status = None
-        # self.price =None
-        self.discound_code =discount_code
+        self.price =None
+        self.discount_code =discount_code
         self.pizzas=pizzas
         self.drinks=drinks
         self.desserts=desserts
@@ -22,8 +22,8 @@ class Order():
             # "deliveryperson_id":self.deliveryperson_id,
             "date": self.date,
             # "status":self.status,
-            # "price":self.price,
-            # "discount_code": self.discount_code,
+            "price":self.price,
+            "discount_code":self.discount_code,
             "desserts": self.desserts,
             "drinks":self.drinks,
             "desserts":self.desserts

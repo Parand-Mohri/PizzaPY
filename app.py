@@ -65,7 +65,7 @@ def get_order(order_id: int):
 @app.route("/purchase", methods=["POST"])
 def create_order():
     order = Order(request.json["customer_id"], request.json["pizzas"], request.json["drinks"], request.json["desserts"], request.json["discount_code"])
-    if order.discound_code is None:
+    if order.discount_code is None:
         order = post_order.create_order(order)
         data = order.dictionary()
         if len(order.pizzas) == 0:
