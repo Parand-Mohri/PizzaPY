@@ -7,7 +7,7 @@ from Order.Order import Order
 from menu.Pizza import Pizza
 from models import get_table, post_order
 from models.calculationPizza import calculate_pizza
-from models.post_order import check_discount_code
+from models.post_order import check_discount_code, discount_code_is_used
 
 app = Flask(__name__)
 
@@ -64,22 +64,23 @@ def get_order(order_id: int):
 
 @app.route("/purchase", methods=["POST"])
 def create_order():
-    order = Order(request.json["customer_id"], request.json["pizzas"], request.json["drinks"], request.json["desserts"], request.json["discount_code"])
-    if order.discount_code is None:
+    order = Order(request.json["customer_id"], request.json["pizzas"], request.json["drinks"], request.json["desserts"], request.json["discount_code_recive"])
+    if order.discount_code_recive is None:
         order = post_order.create_order(order)
         data = order.dictionary()
         if len(order.pizzas) == 0:
             return make_response({"error": f"you need to order atleast one pizza"})
-        else:
-            return jsonify(message='customer',
-                           category='success',
-                           data=data,
-                           status=200)
+        return jsonify(message='customer',
+                       category='success',
+                       data=data,
+                       status=200)
+
     else:
-        if not check_discount_code(order.discound_code):
+        if not check_discount_code(order.discount_code_recive):
             return make_response({"error": f"discount code not exist"})
-        order.price = order.price - (order.price * (10/100))
+        discount_code_is_used(order.discount_code_recive)
         order = post_order.create_order(order)
+        order.price = order.price - (order.price * (10 / 100))
         data = order.dictionary()
         if len(order.pizzas) == 0:
             return make_response({"error": f"you need to order atleast one pizza"})
