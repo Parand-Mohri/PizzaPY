@@ -8,7 +8,7 @@ from Order.Order import Order
 from menu.Pizza import Pizza
 from models import get_table, post_order, post_customer, put_cancel
 from models.calculationPizza import calculate_pizza
-from models.post_order import check_discount_code, discount_code_is_used
+from controller.discountController import check_discount_code, discount_code_is_used
 from time import time, sleep
 
 
