@@ -1,20 +1,27 @@
 import mysql.connector
 from flask import Flask, request, render_template, make_response, jsonify
+from flask_cors import CORS
 
 from Order.Adress import Adress
 from Order.Customer import Customer
 from Order.Order import Order
 from menu.Pizza import Pizza
-from models import get_table, post_order
+from models import get_table, post_order, post_customer, put_cancel
 from models.calculationPizza import calculate_pizza
 from models.post_order import check_discount_code, discount_code_is_used
+from time import time, sleep
+
 
 app = Flask(__name__)
+CORS(app)
+
 
 
 # Pizza & Menu
 @app.route("/pizza", methods=["GET"])
 def get_pizza():
+    # t = Timer(5.0, hello)
+    # t.start()  # after 30 seconds, "hello, world" will be printed
     # for updating the proce for pizzas
     # calculate_pizza()
     pizzas = get_table.get_pizzas()
@@ -64,8 +71,8 @@ def get_order(order_id: int):
 
 @app.route("/purchase", methods=["POST"])
 def create_order():
-    order = Order(request.json["customer_id"], request.json["pizzas"], request.json["drinks"], request.json["desserts"], request.json["discount_code_recive"])
-    if order.discount_code_recive is None:
+    order = Order(request.json["customer_id"], request.json["pizzas"], request.json["drinks"], request.json["desserts"], request.json["discount_code"])
+    if order.discount_code is None:
         order = post_order.create_order(order)
         data = order.dictionary()
         if len(order.pizzas) == 0:
@@ -76,11 +83,12 @@ def create_order():
                        status=200)
 
     else:
-        if not check_discount_code(order.discount_code_recive):
+        if not check_discount_code(order.discount_code):
             return make_response({"error": f"discount code not exist"})
-        discount_code_is_used(order.discount_code_recive)
+        discount_code_is_used(order.discount_code)
         order = post_order.create_order(order)
         order.price = order.price - (order.price * (10 / 100))
+        order.discount_code = None
         data = order.dictionary()
         if len(order.pizzas) == 0:
             return make_response({"error": f"you need to order atleast one pizza"})
@@ -94,12 +102,21 @@ def create_order():
 @app.route("/customer", methods=["POST"])
 def create_customer():
     adress = Adress(request.json["street"], request.json["house_number"], request.json["postcode"])
-    adress = post_order.create_adress(adress)
+    adress = post_customer.create_adress(adress)
     customer = Customer(request.json["customer_name"], adress.adress_id, request.json["phone_number"])
-    customer = post_order.create_customer(customer)
+    customer = post_customer.create_customer(customer)
     data = customer.dictionary()
-
     return jsonify(message='customer',
                    category='success',
                    data=data,
                    status=200)
+
+
+# while True:
+#     sleep(60 - time() % 60)
+
+
+
+
+
+
