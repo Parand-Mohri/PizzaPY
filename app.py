@@ -99,6 +99,19 @@ def create_order():
                            status=200)
 
 
+@app.route('/purchase/cancel/<order_id>', methods=['PUT'])
+def cancel_order(order_id: int):
+    order = get_table.find_single_order(order_id)
+    if len(order) == 2:
+        return make_response("order id does not exist!")
+    else:
+        if put_cancel.check_cancel_order(order_id):
+            put_cancel.cancel_order(order_id)
+            return make_response("Order has been canceled")
+        else:
+            return make_response("Canceling time has been passed")
+
+
 @app.route("/customer", methods=["POST"])
 def create_customer():
     adress = Adress(request.json["street"], request.json["house_number"], request.json["postcode"])
