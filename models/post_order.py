@@ -1,7 +1,5 @@
 from datetime import timedelta
 import mysql.connector
-import string
-import random
 from threading import Timer
 from controller.discountController import discount_generator
 

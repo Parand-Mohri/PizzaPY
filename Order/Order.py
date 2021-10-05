@@ -1,6 +1,5 @@
 from datetime import datetime
 
-
 class Order():
     def __init__(self, customer_id, pizzas, drinks, desserts,  discount_code):
         self.order_id = None

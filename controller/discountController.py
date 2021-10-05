@@ -10,7 +10,7 @@ mycursor = mydb.cursor()
 def check_discount_code(discount_code):
     mycursor.execute(f"select * from discount_code where discount_code = '{discount_code}'")
     if len(mycursor.fetchall()) > 0:
-        # disount_code exist
+        # disount_code already exist
         return True
     else:
         return False

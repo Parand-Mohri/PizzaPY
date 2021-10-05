@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 import mysql.connector
 
 mydb = mysql.connector.connect(host="localhost", user="root", passwd="", database="pizza")
@@ -23,3 +21,17 @@ def create_adress(adress):
     mycursor.execute("select adress_id from adress order by adress_id desc limit 1;")
     adress.adress_id = mycursor.fetchone()[0]
     return adress
+
+
+def find_singe_postcode(postcode):
+    mycursor.execute(f"select * from adress where postcode = '{postcode}'")
+    if mycursor.fetchone() == None:
+        # postcode does not exist
+        return True
+    else:
+        return False
+
+
+def find_customer_id(postcode):
+    mycursor.execute(f"select customer_id from customer where adress_id = (select adress_id from adress where postcode = '{postcode}')")
+    return mycursor.fetchone()[0]
