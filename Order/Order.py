@@ -22,7 +22,7 @@ class Order():
             "date": self.date,
             "status":self.status,
             "price":self.price,
-            "desserts": self.desserts,
+            "pizzas": self.pizzas,
             "drinks":self.drinks,
             "desserts":self.desserts,
             "discount_code": self.discount_code,

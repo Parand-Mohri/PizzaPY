@@ -9,7 +9,7 @@ mycursor = mydb.cursor()
 
 
 def create_order(order):
-    mycursor.execute(f"insert into orders(customer_id, date) values ({order.customer_id}, '{order.date}') ")
+    mycursor.execute(f"insert into orders(customer_id, date, status) values ({order.customer_id}, '{order.date}', '{order.status}') ")
     mydb.commit()
     mycursor.execute("select order_id from orders order by order_id desc limit 1;")
     order.order_id = mycursor.fetchone()[0]
@@ -45,6 +45,8 @@ def create_order(order):
         mydb.commit()
         mycursor.execute(f"select price from desert where desert_id = {dessert['dessert_id']}")
         order.price = order.price + (mycursor.fetchone()[0] * quantity)
+    mycursor.execute(f"update orders set price =({order.price}) where order_id = {order.order_id}")
+    mydb.commit()
     if number_of_pizzas > 9 and order.discount_code is None:
         order.discount_code = discount_generator()
     return order
@@ -58,26 +60,30 @@ def finding_area_code(customer_id):
 
 def calculating_estimated_delivery_time(order):
     mycursor.execute(
-        f"select deliveryPerson_id from deliveryPerson where areacode = {finding_area_code(order.customer_id)} and availability = true")
+        f"select deliveryPerson_id from deliveryPerson where areacode = {finding_area_code(order.customer_id)} and availability = True")
     for dpi in mycursor:
-        if order.deliveryperson_id is None:
+        if order.deliveryperson_id == None:
             order.deliveryperson_id = dpi[0]
-            t = Timer(300.0, delivery_person_to_not_available(dpi[0]), status_to_on_the_way(order))
-            p = Timer(1200.0, status_to_done(order))
+            mycursor.execute(f"update orders set deliveryperson_id ={order.deliveryperson_id} where order_id = {order.order_id}")
+            mydb.commit()
+            t = Timer(300.0, delivery_person_to_not_available, args=[dpi[0]])
+            t1 = Timer(300.0, status_to_on_the_way, args=[order])
+            t2 = Timer(1200.0, status_to_done, args=[order])
             t.start()
-            p.start()
+            t1.start()
+            t2.start()
     if order.deliveryperson_id is not None:
         order.estimated_delivery_time = order.date + timedelta(minutes=20)
     else:
         mycursor.execute(
             f"select deliveryPerson_id from deliveryPerson where areacode = {finding_area_code(order.customer_id)}")
         order.deliveryperson_id = mycursor.fetchone()[0]
-        d = Timer(300.0,status_to_on_the_way(order))
-        d.start()
-        t = Timer(1800.0, delivery_person_to_not_available(order.deliveryperson_id))
-        t.start()
-        p = Timer(3000.0, status_to_done(order))
-        p.start()
+        t3 = Timer(300.0, status_to_on_the_way, args=[order])
+        t4 = Timer(1800.0, delivery_person_to_not_available, args=[order.deliveryperson_id])
+        t5 = Timer(3000.0, status_to_done, args=[order])
+        t3.start()
+        t4.start()
+        t5.start()
         order.estimated_delivery_time = order.date + timedelta(minutes=50)
 
 
@@ -89,8 +95,8 @@ def delivery_person_to_available(deliveryperson_id):
 def delivery_person_to_not_available(deliveryperson_id):
     mycursor.execute(f"update deliveryperson set availability = False where deliveryPerson_id = {deliveryperson_id}")
     mydb.commit()
-    t = Timer(1800.0, delivery_person_to_available(deliveryperson_id))
-    t.start()
+    t6 = Timer(1800.0, delivery_person_to_available, args=deliveryperson_id)
+    t6.start()
 
 
 def status_to_on_the_way(order):

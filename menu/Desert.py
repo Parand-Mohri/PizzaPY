@@ -6,7 +6,7 @@ class Desert():
 
     def dictionary(self):
         return {
-            "desert_id": self.desert_id,
+            "dessert_id": self.desert_id,
             "name": self.name,
-            "price": self.price,
+            "cost": self.price,
         }

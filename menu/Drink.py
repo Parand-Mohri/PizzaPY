@@ -8,6 +8,6 @@ class Drink():
         return {
             "drink_id": self.drink_id,
             "name": self.name,
-            "price": self.price,
+            "cost": self.price,
         }
 

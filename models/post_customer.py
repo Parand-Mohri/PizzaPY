@@ -35,3 +35,12 @@ def find_singe_postcode(postcode):
 def find_customer_id(postcode):
     mycursor.execute(f"select customer_id from customer where adress_id = (select adress_id from adress where postcode = '{postcode}')")
     return mycursor.fetchone()[0]
+
+
+def check_customer_id(customer_id):
+    mycursor.execute(f"select * from customer where customer_id={customer_id}")
+    if mycursor.fetchone() == None:
+        # customer_id does not exist
+        return True
+    else:
+        return False

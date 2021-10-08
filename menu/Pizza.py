@@ -12,8 +12,8 @@ class Pizza():
         return {
             "pizza_id":self.pizza_id,
             "name": self.name,
-            "price": self.price,
-            "price_with_VAT": self.price_with_VAT,
+            "price_without_VAT": self.price,
+            "cost": self.price_with_VAT,
             "vegetarian": self.vegetarian,
             "toppings": self.toppings
         }
