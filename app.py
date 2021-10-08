@@ -53,9 +53,9 @@ def get_desert():
 
 
 # Order & Customer
-@app.route("/order", methods=["GET"])
+@app.route("/purchase", methods=["GET"])
 def get_order():
-    order_id = request.json["order_id"]
+    order_id = request.json["purchase_id"]
     order = get_table.find_single_order(order_id)
     print(order)
     if len(order) == 2:
@@ -104,7 +104,7 @@ def create_order():
 
 @app.route('/purchase', methods=['PUT'])
 def cancel_order():
-    order_id = request.json["order_id"]
+    order_id = request.json["purchase_id"]
     print(str(order_id))
     order = get_table.find_single_order(order_id)
     if len(order) == 2:
