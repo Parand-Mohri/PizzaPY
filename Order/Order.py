@@ -16,7 +16,7 @@ class Order():
 
     def dictionary(self):
         return {
-            "order_id" : self.order_id,
+            "purchase_id" : self.order_id,
             "customer_id" : self.customer_id,
             "deliveryperson_id":self.deliveryperson_id,
             "date": self.date,
