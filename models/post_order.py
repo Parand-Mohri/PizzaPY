@@ -6,6 +6,7 @@ from controller.discountController import discount_generator
 mydb = mysql.connector.connect(host="localhost", user="root", passwd="", database="pizza")
 
 mycursor = mydb.cursor()
+mycursor.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED")
 
 
 def create_order(order):
@@ -74,6 +75,9 @@ def calculating_estimated_delivery_time(order):
             t2.start()
     if order.deliveryperson_id is not None:
         order.estimated_delivery_time = order.date + timedelta(minutes=20)
+        mycursor.execute(
+            f"update orders set estimated_delivery_time ='{order.estimated_delivery_time}' where order_id = {order.order_id}")
+        mydb.commit()
     else:
         mycursor.execute(
             f"select deliveryPerson_id from deliveryPerson where areacode = {finding_area_code(order.customer_id)}")
@@ -85,6 +89,9 @@ def calculating_estimated_delivery_time(order):
         t4.start()
         t5.start()
         order.estimated_delivery_time = order.date + timedelta(minutes=50)
+        mycursor.execute(
+            f"update orders set estimated_delivery_time ='{order.estimated_delivery_time}' where order_id = {order.order_id}")
+        mydb.commit()
 
 
 def delivery_person_to_available(deliveryperson_id):
